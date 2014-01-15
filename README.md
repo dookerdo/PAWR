@@ -35,4 +35,4 @@ The intention is to steadily add more calls and implement a suitable solution to
 
 ##### Why did you fork?
 
-I decided to fork [three18ti's repository](https://github.com/three18ti/Reddit.pm) instead of continuing to submit commits due to his relative inactivity and a growing desire to implement things as I saw fit without stepping on someone's shoes. This way, I'm free to implement what I want, when I want, and how I want to! 
+I decided to fork [three18ti's repository](https://github.com/three18ti/Reddit.pm) instead of continuing to submit commits due to Reddit.pm's relative development inactivity and a growing desire to implement things as I saw fit without stepping on someone's shoes. This way, I'm free to implement what I want, when I want, and how I want to! 
