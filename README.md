@@ -14,6 +14,7 @@ The current list of public functions:
 + comment
 + vote
 + delete
++ edit_user_text
 + get_link_info
 + get_subreddit
 + get_comments
@@ -25,6 +26,11 @@ The current list of public functions:
 + get_user_saved
 + get_user_disliked
 + username_available
++ hide/unhide
++ save
++ report
++ mark/unmark_nsfw
+
 
 
 ##### FUTURE
