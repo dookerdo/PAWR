@@ -50,6 +50,24 @@ Follow development at https://github.com/dookerdo/PAWR
   # Delete comment or post
   $r->delete($thing_id);
 
+  # Hide/Unhide a link or story
+  $r->hide($thing_id);
+  $r->unhide($thing_id);
+
+  # Mark/Unmark a link NSFW
+  $r->mark_nsfw($thing_id);
+  $r->unmark_nfsw($thing_id);
+
+  # Report a link or comment
+  $r->report($thing_id);
+
+  # Edit a comment or self.post
+  # $text accepts basic markdown
+  $r->edit_user_text($thing_id, $text);
+
+  # Save a link or self.post
+  $r->save($id);
+
 =head1 DESCRIPTION
 
 Perl module for accessing Reddit API
@@ -368,6 +386,20 @@ sub delete {
 }
 
 
+sub edit_user_text {
+	my($self,$id,$text) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->post('http://www.reddit.com/api/editusertext',
+	{
+		text => "$text",
+		thing_id => $id,
+		uh => $self->modhash,
+	});
+	return from_json $response->content;
+
+}
+
+
 
 sub get_user_info {
 	my $self = shift;
@@ -630,6 +662,130 @@ Checks username availability. Returns 'true' for available and 'false' for unava
 
 =cut
 
+sub report{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->post('http://www.reddit.com/api/report',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<report($id)>
+Report a link or story.
+
+$r->report($id);
+
+=back
+
+=cut
+
+sub mark_nsfw{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->post('http://www.reddit.com/api/marknsfw',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<mark_nsfw($id)>
+Mark NSFW a link or story.
+
+$r->mark_nsfw($id);
+
+=back
+
+=cut
+
+sub unmark_nsfw{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->post('http://www.reddit.com/api/unmarknsfw',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<unmark_nsfw($id)>
+Unmark NSFW a previously marked link or story.
+
+$r->unmark_nsfw($id);
+
+=back
+
+=cut
+sub hide{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->ua->post('http://www.reddit.com/api/hide',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<hide($id)>
+Hide link or story.
+
+$r->hide($id);
+
+=back
+
+=cut
+
+sub unhide{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->ua->post('http://www.reddit.com/api/unhide',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<unhide($id)>
+Unhide a previously hidden link or story.
+
+$r->unhide($id);
+
+=back
+
+=cut
+
+sub save{
+	my ($self,$id) = @_;
+	$id = $self->_parse_comment_id($id);
+	my $response = $self->ua->post('http://www.reddit.com/api/save',
+	{
+		id => $id,
+		uh => $self->modhash,
+	});
+	return $response->content;
+}
+=over 2
+
+=item B<save($id)>
+Save a link or story.
+
+$r->save($id);
+
+=back
+
+=cut
 
 no Mouse;
 __PACKAGE__->meta->make_immutable;
