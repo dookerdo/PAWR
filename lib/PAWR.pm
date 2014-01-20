@@ -1,5 +1,5 @@
 package PAWR;
-use 5.010001;
+use v5.12;
 
 use strict;
 use warnings;
@@ -245,13 +245,28 @@ sub submit_link {
             title   => $title,
             r       => $subreddit || $self->subreddit,
             url     => $url,
+	    iden    => '', # ID of captcha
+	    captcha => '', # Captcha answer
         }
     );
 
     my $json_content    = $newpost->content;
     my $decoded         = from_json $json_content;
 
-    #returns link to new post if successful
+    # Check for required captcha or rate limit 
+    my $return_code = $decoded->{jquery}[18][3][0];
+
+    # If there is a return code error
+    if($return_code){
+	    if($return_code eq '.error.BAD_CAPTCHA.field-captcha'){
+		die("SUBMISSION FAILED: Requires captcha authentication [CAPTCHA]. See 'www.reddit.com/captcha/" . $decoded->{jquery}[16][3][0] . ".png'");
+	    }
+	    elsif($return_code eq ".error.RATELIMIT.field-ratelimit"){
+		die("SUBMISSION FAILED: Too many requests. Wait a few minutes. [RATELIMIT].");
+	    }
+    }
+
+    # Returns link to new post if successful
     my $link = $decoded->{jquery}[16][3][0]; # get id of your post from response
     my $id = $self->_parse_link($link); # format id correctly
 
@@ -288,15 +303,20 @@ sub submit_story {
     );
 
     my $json_content    = $newpost->content;
+    print $json_content;
     my $decoded         = from_json $json_content;
     
 
    #---------- CAPTCHA -------#
     my $captcha = $decoded->{jquery}[12][3][0];
+    #&_catch_submit_code($captcha);
+    if($captcha){
     if($captcha eq ".error.BAD_CAPTCHA.field-captcha"){ #If given captcha 
 	my $captcha_id = $decoded->{jquery}[10][3][0]; #Not used yet. Captcha id.
+	#$self->get();
 
 	die("Reddit needs you to verify a captcha in order to post.");
+    }
     }
    #Catcha will be required for accounts with low karma.
    # url for captchas: http://www.reddit.com/captcha/captcha_id.png
