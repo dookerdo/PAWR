@@ -483,7 +483,7 @@ sub get_user_comments{
 
 Get list of hashes of comments for a specific redditor.
 
-$r->get_user_overview({username => 'some_username', limit=>4,'sort'=>'hot'});
+$r->get_user_comments({username => 'some_username', limit=>4,'sort'=>'hot'});
 
 See http://www.reddit.com/dev/api#GET_user_{username}_comments for full list of arguments.
 
@@ -512,16 +512,19 @@ sub vote {
 	my $self = shift; 
 	my ($thing_id, $direction) = @_;
 	
-	given ($direction) {
-		when ( /up/i || 1) {
+	for ($direction) {
+		when (/up/i) {
 			$direction = 1;
 		}
-		when ( /down/i || -1) {
+		when (/down/i) {
 			$direction = -1;
 		}
-		when ( /rescind/i || 0 ) {
+		when (/rescind/i) {
 			$direction = 0;
 		}
+		when ('-1'){}
+		when ('1'){}
+		when ('0'){}
 		default {
 			warn "Please enter a valid direction";
 			return 0;
