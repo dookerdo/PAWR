@@ -1,4 +1,4 @@
-PAWR (**P**erl **A**PI **W**rapper for **R**eddit)
+PAWR (*P*erl *A*PI *W*rapper for *R*eddit)
 
 PAWR (pronounced "power") is a perl module designed to simplify the automation of Reddit API calls. This enables those with even rudimentary Perl experience to begin tinkering in automating many tasks.
 
