@@ -171,7 +171,10 @@ sub _parse_link {
 # Example:  www.reddit.com/r/linux/comments/14hzj3/some_title/ -> t3_14hzj3
     my $self = shift;
     my $link = shift;
-    my ($id) = $link =~ /comments\/(\w+)\//i;
+    my $id = $link;
+    unless($link =~ m/[\w\d]{2,8}/){
+    	($id) = $link =~ /comments\/(\w+)\//i;
+    }
     return 't3_' . $id;
 }
 
