@@ -452,7 +452,7 @@ sub _user_get {
 	my %packaged = %{from_json($response->content)};
 	my @posts;
 	foreach(@{$packaged{'data'}->{'children'}}){push(@posts,$_->{'data'})};
-	return @posts;
+	return \@posts;
 } 
 
 ###############################################
@@ -469,10 +469,11 @@ sub get_user_overview{
 =over 2
 
 =item B<get_user_overview(%hash_args)>
-Get overview of a specific redditor.
+Get overview of a specific redditor. Returns an array reference.
 
 $r->get_user_overview({username => 'some_username'});
-
+print @{$r}[0]->{'subreddit_id'}; #get subreddit id for 1st listed post.
+foreach(keys @{$r}[0]){ print $_ } #will display all valid hash keys
 =back
 
 =cut
@@ -486,7 +487,7 @@ sub get_user_comments{
 
 Get list of hashes of comments for a specific redditor.
 
-$r->get_user_comments({username => 'some_username', limit=>4,'sort'=>'hot'});
+$r->get_user_comments({username => 'some_username', limit=>4, sort=>'hot'});
 
 See http://www.reddit.com/dev/api#GET_user_{username}_comments for full list of arguments.
 
