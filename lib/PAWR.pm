@@ -145,7 +145,7 @@ sub _login {
             passwd      => $self->password,
         }
     );
-
+	print("\n" . $response->content . "\n");
     $self->_set_cookie($response);
 }
 
@@ -162,7 +162,7 @@ sub _parse_modhash {
     my $self        = shift;
     my $response    = shift;
 
-    my $decoded = from_json ($response->content);
+    my $decoded = from_json($response->content);
     $self->modhash($decoded->{json}{data}{modhash});
 }
 
@@ -246,7 +246,6 @@ sub submit_link {
             kind    => $kind,
             sr      => $subreddit || $self->subreddit,
             title   => $title,
-            r       => $subreddit || $self->subreddit,
             url     => $url,
 	    iden    => '', # ID of captcha
 	    captcha => '', # Captcha answer
@@ -600,18 +599,18 @@ sub get_subreddit{
 	my $response = $self->get("http://www.reddit.com/r/$subred/$sort.json$other");
 	my $container = from_json($response->content);
 	push (@posts, $_->{'data'}) foreach @{$container->{'data'}->{'children'}};
-	return @posts;
+	return \@posts;
 }
 
 =over 2
 
 =item B<get_subreddit()>
    
-Retreives posts from a subreddit and returns it in the form of an array of hashrefs.
+Retreives posts from a subreddit and returns it in the form of a reference to an array of hashrefs.
 Each hashref contains the information of an individual post.
 
-	$r->get_subreddit({'sort'=>'new','limit'=>'30','subreddit'=>'perl'});
-	$r->get_subreddit()
+	$arrayref = $r->get_subreddit({'sort'=>'new','limit'=>'30','subreddit'=>'perl'});
+	$arrayref = $r->get_subreddit()
 
 Acceptable keys are: sort, limit, subreddit, before, after, show, count, target. Refer to the Reddit api for more information concerning their purpose.
 
